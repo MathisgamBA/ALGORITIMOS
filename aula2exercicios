@@ -1,1 +1,453 @@
+EXERCICIO 2
+
+
+import java.util.Scanner;
+import java.util.Vector;
+
+public class ex2 {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Vector<String> registros = new Vector<>();
+
+        while (true) {
+            System.out.println("\n1. Cadastrar");
+            System.out.println("2. Selecionar todos os registros");
+            System.out.println("3. Realizar uma pesquisa");
+            System.out.println("4. Alterar dados");
+            System.out.println("5. Remoção");
+            System.out.println("6. Sair");
+            System.out.print("Escolha uma opção: ");
+            int opcao = scanner.nextInt();
+
+            switch (opcao) {
+                case 1:
+                    System.out.print("Nome: ");
+                    String nome = scanner.next();
+                    if (!registros.contains(nome)) {
+                        registros.add(nome);
+                        System.out.println("Registro cadastrado com sucesso!");
+                    } else {
+                        System.out.println("Este registro já existe.");
+                    }
+                    break;
+
+                case 2:
+                    if (registros.isEmpty()) {
+                        System.out.println("Não há registros.");
+                    } else {
+                        System.out.println("Registros:");
+                        for (String registro : registros) {
+                            System.out.println(registro);
+                        }
+                    }
+                    break;
+
+                case 3:
+                    System.out.print("Digite o termo de pesquisa: ");
+                    String termo = scanner.next();
+                    System.out.println("Registros encontrados:");
+                    for (String registro : registros) {
+                        if (registro.contains(termo)) {
+                            System.out.println(registro);
+                        }
+                    }
+                    break;
+
+                case 4:
+                    System.out.print("Digite o nome do registro a ser alterado: ");
+                    String nomeParaAlterar = scanner.next();
+                    if (registros.contains(nomeParaAlterar)) {
+                        System.out.print("Novo nome: ");
+                        String novoNome = scanner.next();
+                        registros.set(registros.indexOf(nomeParaAlterar), novoNome);
+                        System.out.println("Registro alterado com sucesso!");
+                    } else {
+                        System.out.println("Registro não encontrado.");
+                    }
+                    break;
+
+                case 5:
+                    System.out.print("Digite o nome do registro a ser removido: ");
+                    String nomeParaRemover = scanner.next();
+                    if (registros.contains(nomeParaRemover)) {
+                        registros.remove(nomeParaRemover);
+                        System.out.println("Registro removido com sucesso!");
+                    } else {
+                        System.out.println("Registro não encontrado.");
+                    }
+                    break;
+
+                case 6:
+                    System.out.println("Saindo...");
+                    
+                    break;
+
+                default:
+                    System.out.println("Opção inválida. Tente novamente.");
+            }
+        }
+    }
+}
+
+
+EXERCICIO 3
+
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class ex3 {
+    static ArrayList<Produto> lista = new ArrayList<>();
+    static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        boolean sair = false;
+        
+        while (!sair) {
+            System.out.println("Escolha uma opção:");
+            System.out.println("1. Cadastrar produto");
+            System.out.println("2. Selecionar todos os registros");
+            System.out.println("3. Quantidade de segmentos");
+            System.out.println("4. Alterar dados");
+            System.out.println("5. Remoção");
+            System.out.println("6. Sair");
+
+            int opcao = scanner.nextInt();
+            scanner.nextLine(); 
+
+            switch (opcao) {
+                case 1:
+                    cadastrarProduto();
+                    break;
+                case 2:
+                    selecionarTodosRegistros();
+                    break;
+                case 3:
+                    quantidadeSegmentos();
+                    break;
+                case 4:
+                    alterarDados();
+                    break;
+                case 5:
+                    removerRegistro();
+                    break;
+                case 6:
+                    sair = true;
+                    System.out.println("Saindo...");
+                    break;
+                default:
+                    System.out.println("Opção inválida, tente novamente.");
+            }
+        }
+    }
+
+    static void cadastrarProduto() {
+        System.out.println("Digite o nome do produto:");
+        String nome = scanner.nextLine();
+        System.out.println("Digite o segmento do produto:");
+        String segmento = scanner.nextLine();
+        
+        
+        Map<String, String> outrasCaracteristicas = new HashMap<>();
+        System.out.println("Deseja adicionar características adicionais? (s/n)");
+        String resposta = scanner.nextLine();
+        if (resposta.equalsIgnoreCase("s")) {
+            boolean adicionarMais = true;
+            while (adicionarMais) {
+                System.out.println("Digite o nome da característica:");
+                String nomeCaracteristica = scanner.nextLine();
+                outrasCaracteristicas.put(nomeCaracteristica, "");
+                
+                System.out.println("Deseja adicionar mais características? (s/n)");
+                resposta = scanner.nextLine();
+                if (!resposta.equalsIgnoreCase("s")) {
+                    adicionarMais = false;
+                }
+            }
+        }
+
+        lista.add(new Produto(nome, segmento, outrasCaracteristicas));
+        System.out.println("Produto cadastrado com sucesso.");
+    }
+
+    static void selecionarTodosRegistros() {
+        if (lista.isEmpty()) {
+            System.out.println("Nenhum produto cadastrado.");
+        } else {
+            for (Produto produto : lista) {
+                System.out.println(produto);
+            }
+        }
+    }
+
+    static void quantidadeSegmentos() {
+        Map<String, Integer> segmentos = new HashMap<>();
+
+        for (Produto product : lista) {
+            segmentos.put(product.segmento, segmentos.getOrDefault(product.segmento, 0) + 1);
+        }
+
+        System.out.println("Quantidade de segmentos:");
+
+        for (Map.Entry<String, Integer> entry : segmentos.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+    }
+
+    static void alterarDados() {
+        System.out.println("Digite o nome do produto que deseja alterar:");
+        String nome = scanner.nextLine();
+
+        for (Produto produto : lista) {
+            if (produto.nome.equals(nome)) {
+                System.out.println("Digite o novo nome:");
+                String novoNome = scanner.nextLine();
+                System.out.println("Digite o novo segmento:");
+                String novoSegmento = scanner.nextLine();
+                
+                
+                
+                produto.nome = novoNome;
+                produto.segmento = novoSegmento;
+                
+                System.out.println("Dados do produto alterados com sucesso.");
+                return;
+            }
+        }
+
+        System.out.println("Produto não encontrado.");
+    }
+
+    static void removerRegistro() {
+        System.out.println("Digite o nome do produto que deseja remover:");
+        String nome = scanner.nextLine();
+
+        for (Produto produto : lista) {
+            if (produto.nome.equals(nome)) {
+                lista.remove(produto);
+                System.out.println("Produto removido com sucesso.");
+                return;
+            }
+        }
+
+        System.out.println("Produto não encontrado.");
+    }
+
+    static class Produto {
+        String nome;
+        String segmento;
+        Map<String, String> outrasCaracteristicas;
+
+        public Produto(String nome, String segmento, Map<String, String> outrasCaracteristicas) {
+            this.nome = nome;
+            this.segmento = segmento;
+            this.outrasCaracteristicas = outrasCaracteristicas;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Nome: ").append(nome).append(", Segmento: ").append(segmento);
+            if (!outrasCaracteristicas.isEmpty()) {
+                sb.append(", Outras Características: ");
+                for (Map.Entry<String, String> entry : outrasCaracteristicas.entrySet()) {
+                    sb.append(entry.getKey()).append(", ");
+                }
+            }
+            return sb.toString();
+        }
+    }
+}
+
+
+
+EXERCICIO 4
+
+import java.util.LinkedList;
+import java.util.Scanner;
+
+public class ex4 {
+    LinkedList<String> lista = new LinkedList<>();
+    Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        ex4 estruturadenos = new ex4();
+        estruturadenos.run();
+    }
+
+    public void run() {
+        boolean sair = false;
+
+        while (!sair) {
+            System.out.println("Escolha uma opção:");
+            System.out.println("1. Cadastrar nome");
+            System.out.println("2. Listar nomes");
+            System.out.println("3. Finalizar");
+
+            int opcao = scanner.nextInt();
+            scanner.nextLine(); 
+
+            switch (opcao) {
+                case 1:
+                    cadastrarNome();
+                    break;
+                case 2:
+                    listarNomes();
+                    break;
+                case 3:
+                    sair = true;
+                    System.out.println("Finalizando...");
+                    break;
+                default:
+                    System.out.println("Opção inválida, tente novamente.");
+            }
+        }
+    }
+
+    void cadastrarNome() {
+        System.out.println("Digite o nome que deseja cadastrar:");
+        String nome = scanner.nextLine();
+
+        lista.add(nome);
+        System.out.println("Nome cadastrado com sucesso.");
+    }
+
+    void listarNomes() {
+        if (lista.isEmpty()) {
+            System.out.println("Lista vazia.");
+        } else {
+            System.out.println("Nomes na lista:");
+            for (String nome : lista) {
+                System.out.println(nome);
+            }
+        }
+    }
+}
+
+
+
+EXERCICIO 5
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class ex5 {
+    Map<String, String> estudantes = new HashMap<>();
+    Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        ex5 controleEstudantes = new ex5();
+        controleEstudantes.run();
+    }
+
+    public void run() {
+        boolean sair = false;
+
+        while (!sair) {
+            System.out.println("Escolha uma opção:");
+            System.out.println("1. Cadastrar aluno");
+            System.out.println("2. Selecionar aluno");
+            System.out.println("3. Alterar dados do aluno");
+            System.out.println("4. Excluir aluno");
+            System.out.println("5. Estatísticas");
+            System.out.println("6. Sair");
+
+            int opcao = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (opcao) {
+                case 1:
+                    cadastrarAluno();
+                    break;
+                case 2:
+                    selecionarAluno();
+                    break;
+                case 3:
+                    alterarDadosAluno();
+                    break;
+                case 4:
+                    excluirAluno();
+                    break;
+                case 5:
+                    exibirEstatisticas();
+                    break;
+                case 6:
+                    sair = true;
+                    System.out.println("Saindo...");
+                    break;
+                default:
+                    System.out.println("Opção inválida, tente novamente.");
+            }
+        }
+    }
+
+    void cadastrarAluno() {
+        System.out.println("Digite o nome do aluno:");
+        String nome = scanner.nextLine();
+        System.out.println("Digite o status do aluno (Aprovado/Reprovado):");
+        String status = scanner.nextLine();
+
+        estudantes.put(nome, status);
+        System.out.println("Aluno cadastrado com sucesso.");
+    }
+
+    void selecionarAluno() {
+        System.out.println("Digite o nome do aluno que deseja selecionar:");
+        String nome = scanner.nextLine();
+
+        if (estudantes.containsKey(nome)) {
+            System.out.println("Nome: " + nome + ", Status: " + estudantes.get(nome));
+        } else {
+            System.out.println("Aluno não encontrado.");
+        }
+    }
+
+    void alterarDadosAluno() {
+        System.out.println("Digite o nome do aluno que deseja alterar:");
+        String nome = scanner.nextLine();
+
+        if (estudantes.containsKey(nome)) {
+            System.out.println("Digite o novo status do aluno (Aprovado/Reprovado):");
+            String novoStatus = scanner.nextLine();
+            estudantes.put(nome, novoStatus);
+            System.out.println("Dados do aluno alterados com sucesso.");
+        } else {
+            System.out.println("Aluno não encontrado.");
+        }
+    }
+
+    void excluirAluno() {
+        System.out.println("Digite o nome do aluno que deseja excluir:");
+        String nome = scanner.nextLine();
+
+        if (estudantes.containsKey(nome)) {
+            estudantes.remove(nome);
+            System.out.println("Aluno excluído com sucesso.");
+        } else {
+            System.out.println("Aluno não encontrado.");
+        }
+    }
+
+    void exibirEstatisticas() {
+        int totalAlunos = estudantes.size();
+        int aprovados = 0;
+        int reprovados = 0;
+
+        for (String status : estudantes.values()) {
+            if (status.equalsIgnoreCase("Aprovado")) {
+                aprovados++;
+            } else if (status.equalsIgnoreCase("Reprovado")) {
+                reprovados++;
+            }
+        }
+
+        System.out.println("Estatísticas:");
+        System.out.println("Total de alunos registrados: " + totalAlunos);
+        System.out.println("Total de alunos aprovados: " + aprovados);
+        System.out.println("Total de alunos reprovados: " + reprovados);
+    }
+}
 
